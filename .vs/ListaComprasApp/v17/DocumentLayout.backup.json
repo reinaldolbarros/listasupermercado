@@ -3,12 +3,12 @@
   "WorkspaceRootPath": "C:\\Users\\reina\\OneDrive\\TI\\Lista\\ListaComprasApp\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{908AE938-8823-4B58-B58F-89003BA79D73}|ListaComprasApp\\ListaComprasApp.csproj|c:\\users\\reina\\onedrive\\ti\\lista\\listacomprasapp\\listacomprasapp\\views\\produtospadraopage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{908AE938-8823-4B58-B58F-89003BA79D73}|ListaComprasApp\\ListaComprasApp.csproj|solutionrelative:listacomprasapp\\views\\produtospadraopage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{908AE938-8823-4B58-B58F-89003BA79D73}|ListaComprasApp\\ListaComprasApp.csproj|c:\\users\\reina\\onedrive\\ti\\lista\\listacomprasapp\\listacomprasapp\\views\\produtospadraopage.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{908AE938-8823-4B58-B58F-89003BA79D73}|ListaComprasApp\\ListaComprasApp.csproj|solutionrelative:listacomprasapp\\views\\produtospadraopage.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{908AE938-8823-4B58-B58F-89003BA79D73}|ListaComprasApp\\ListaComprasApp.csproj|c:\\users\\reina\\onedrive\\ti\\lista\\listacomprasapp\\listacomprasapp\\views\\produtospadraopage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{908AE938-8823-4B58-B58F-89003BA79D73}|ListaComprasApp\\ListaComprasApp.csproj|solutionrelative:listacomprasapp\\views\\produtospadraopage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{908AE938-8823-4B58-B58F-89003BA79D73}|ListaComprasApp\\ListaComprasApp.csproj|c:\\users\\reina\\onedrive\\ti\\lista\\listacomprasapp\\listacomprasapp\\viewmodels\\produtospadraoviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -116,7 +116,7 @@
         },
         {
           "DockedHeight": 173,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Bookmark",
@@ -132,8 +132,7 @@
               "RelativeToolTip": "ListaComprasApp\\ViewModels\\ListaDetalhesViewModel.cs",
               "ViewState": "AgIAAOMAAAAAAAAAAAAowPAAAAAPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-15T14:52:47.727Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-15T14:52:47.727Z"
             },
             {
               "$type": "Document",
@@ -145,31 +144,30 @@
               "RelativeToolTip": "ListaComprasApp\\obj\\Debug\\net8.0-windows10.0.19041.0\\win10-x64\\Platforms\\Windows\\App.g.i.cs",
               "ViewState": "AgIAAD4AAAAAAAAAAAAkwEoAAABEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-15T16:31:29.804Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-15T16:31:29.804Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "ProdutosPadraoPage.xaml.cs",
               "DocumentMoniker": "C:\\Users\\reina\\OneDrive\\TI\\Lista\\ListaComprasApp\\ListaComprasApp\\Views\\ProdutosPadraoPage.xaml.cs",
               "RelativeDocumentMoniker": "ListaComprasApp\\Views\\ProdutosPadraoPage.xaml.cs",
               "ToolTip": "C:\\Users\\reina\\OneDrive\\TI\\Lista\\ListaComprasApp\\ListaComprasApp\\Views\\ProdutosPadraoPage.xaml.cs",
               "RelativeToolTip": "ListaComprasApp\\Views\\ProdutosPadraoPage.xaml.cs",
-              "ViewState": "AgIAAJgBAAAAAAAAAAAowLMBAAABAAAAAAAAAA==",
+              "ViewState": "AgIAALUAAAAAAAAAAAAowNEBAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-15T22:22:34.264Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "ProdutosPadraoPage.xaml",
               "DocumentMoniker": "C:\\Users\\reina\\OneDrive\\TI\\Lista\\ListaComprasApp\\ListaComprasApp\\Views\\ProdutosPadraoPage.xaml",
               "RelativeDocumentMoniker": "ListaComprasApp\\Views\\ProdutosPadraoPage.xaml",
               "ToolTip": "C:\\Users\\reina\\OneDrive\\TI\\Lista\\ListaComprasApp\\ListaComprasApp\\Views\\ProdutosPadraoPage.xaml",
               "RelativeToolTip": "ListaComprasApp\\Views\\ProdutosPadraoPage.xaml",
-              "ViewState": "AgIAAHYAAAAAAAAAAAAkwIIAAAA1AAAAAAAAAA==",
+              "ViewState": "AgIAAGQAAAAAAAAAAAAIwMwAAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
               "WhenOpened": "2025-09-15T22:20:33.135Z",
               "EditorCaption": ""
@@ -195,7 +193,7 @@
               "RelativeDocumentMoniker": "ListaComprasApp\\ViewModels\\ProdutosPadraoViewModel.cs",
               "ToolTip": "C:\\Users\\reina\\OneDrive\\TI\\Lista\\ListaComprasApp\\ListaComprasApp\\ViewModels\\ProdutosPadraoViewModel.cs",
               "RelativeToolTip": "ListaComprasApp\\ViewModels\\ProdutosPadraoViewModel.cs",
-              "ViewState": "AgIAAOsAAAAAAAAAAAA7wPoAAAAxAAAAAAAAAA==",
+              "ViewState": "AgIAAOwAAAAAAAAAAAAkwPoAAAAxAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-15T22:17:51.211Z",
               "EditorCaption": ""
@@ -221,7 +219,7 @@
               "RelativeDocumentMoniker": "ListaComprasApp\\Views\\ListaDetalhesPage.xaml",
               "ToolTip": "C:\\Users\\reina\\OneDrive\\TI\\Lista\\ListaComprasApp\\ListaComprasApp\\Views\\ListaDetalhesPage.xaml",
               "RelativeToolTip": "ListaComprasApp\\Views\\ListaDetalhesPage.xaml",
-              "ViewState": "AgIAAL0AAAAAAAAAAAAAAM4AAAAHAAAAAAAAAA==",
+              "ViewState": "AgIAALQAAAAAAAAAACBjwM4AAAAHAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
               "WhenOpened": "2025-09-15T15:14:54.166Z",
               "EditorCaption": ""

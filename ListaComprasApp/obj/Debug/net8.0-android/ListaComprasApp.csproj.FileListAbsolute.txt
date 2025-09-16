@@ -1042,3 +1042,4 @@ C:\Users\reina\OneDrive\TI\Lista\ListaComprasApp\ListaComprasApp\obj\Debug\net8.
 C:\Users\reina\OneDrive\TI\Lista\ListaComprasApp\ListaComprasApp\obj\Debug\net8.0-android\stamp\_GeneratePackageManagerJava.stamp
 C:\Users\reina\OneDrive\TI\Lista\ListaComprasApp\ListaComprasApp\obj\Debug\net8.0-android\stamp\_ResolveLibraryProjectImports.stamp
 C:\Users\reina\OneDrive\TI\Lista\ListaComprasApp\ListaComprasApp\obj\Debug\net8.0-android\android\assets\System.Private.CoreLib.dll
+C:\Users\reina\OneDrive\TI\Lista\ListaComprasApp\ListaComprasApp\obj\Debug\net8.0-android\ListaComprasApp.sourcelink.json

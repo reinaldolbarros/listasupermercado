@@ -77,18 +77,20 @@ public partial class ProdutosPadraoPage : ContentPage
                     BorderColor = Colors.LightGray,
                     CornerRadius = 8,
                     Padding = 15,
-                    Margin = new Thickness(0, 2)
+                    Margin = new Thickness(0, 2),
+                    MinimumHeightRequest = 80 // Aumentado para acomodar o Entry maior
                 };
 
+                // ALTERAÇÃO PRINCIPAL: Redefinindo as colunas para dar mais espaço ao nome
                 var itemGrid = new Grid
                 {
                     ColumnDefinitions =
                     {
-                        new ColumnDefinition { Width = GridLength.Auto }, // Checkbox
-                        new ColumnDefinition { Width = GridLength.Auto }, // Ícone
-                        new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }, // Nome + detalhes
-                        new ColumnDefinition { Width = new GridLength(100, GridUnitType.Absolute) }, // Controles quantidade
-                        new ColumnDefinition { Width = new GridLength(80, GridUnitType.Absolute) }  // Preço
+                        new ColumnDefinition { Width = GridLength.Auto }, // Checkbox 
+                        new ColumnDefinition { Width = GridLength.Auto }, // Ícone 
+                        new ColumnDefinition { Width = new GridLength(4, GridUnitType.Star) }, // Nome + detalhes (MÁXIMO ESPAÇO)
+                        new ColumnDefinition { Width = new GridLength(60, GridUnitType.Absolute) }, // Controles quantidade (menor)
+                        new ColumnDefinition { Width = new GridLength(65, GridUnitType.Absolute) }  // Preço (menor)
                     }
                 };
 
@@ -106,7 +108,8 @@ public partial class ProdutosPadraoPage : ContentPage
                     Text = produto.Icone,
                     FontSize = 24,
                     VerticalOptions = LayoutOptions.Center,
-                    Margin = new Thickness(10, 0, 0, 0)
+                    HorizontalOptions = LayoutOptions.Center,
+                    Margin = new Thickness(5, 0, 5, 0) // Reduzido o espaçamento
                 };
                 itemGrid.Children.Add(iconeLabel);
                 Grid.SetColumn(iconeLabel, 1);
@@ -114,19 +117,36 @@ public partial class ProdutosPadraoPage : ContentPage
                 // Nome e detalhes
                 var detalhesStack = new StackLayout
                 {
-                    VerticalOptions = LayoutOptions.Center,
-                    Margin = new Thickness(10, 0, 5, 0),
+                    VerticalOptions = LayoutOptions.Start,
+                    HorizontalOptions = LayoutOptions.FillAndExpand, // Preencher todo espaço
+                    Margin = new Thickness(5, 0, 10, 0),
                     Spacing = 2
                 };
 
+                // Verificar se é palavra única ou composta para aplicar lógica diferente
+                var nomeUpper = produto.Nome.ToUpper();
+                var temEspacos = nomeUpper.Contains(' ');
+
                 var nomeLabel = new Label
                 {
-                    Text = produto.Nome.ToUpper(),
-                    FontSize = 16,
+                    Text = nomeUpper,
+                    FontSize = 14,
                     FontAttributes = FontAttributes.Bold,
-                    LineBreakMode = LineBreakMode.WordWrap,
-                    MaxLines = 2
+                    LineBreakMode = temEspacos ? LineBreakMode.WordWrap : LineBreakMode.TailTruncation,
+                    MaxLines = temEspacos ? 3 : 1, // Múltiplas linhas só para palavras compostas
+                    VerticalOptions = LayoutOptions.Start,
+                    HorizontalOptions = LayoutOptions.FillAndExpand
                 };
+
+                // Para palavras únicas grandes, ajustar fonte dinamicamente
+                if (!temEspacos && nomeUpper.Length > 10)
+                {
+                    nomeLabel.FontSize = 12; // Fonte menor para palavras únicas longas
+                }
+                if (!temEspacos && nomeUpper.Length > 15)
+                {
+                    nomeLabel.FontSize = 10; // Ainda menor para palavras muito longas
+                }
                 detalhesStack.Children.Add(nomeLabel);
 
                 var unidadeTexto = produto.Unidade switch
@@ -167,11 +187,13 @@ public partial class ProdutosPadraoPage : ContentPage
                 {
                     Placeholder = "0,00",
                     Text = produto.PrecoMedio.ToString("F2"),
-                    FontSize = 10,
+                    FontSize = 12, // Aumentado ligeiramente
                     Keyboard = Keyboard.Numeric,
-                    WidthRequest = 60,
-                    HeightRequest = 25,
-                    Margin = new Thickness(0, 2, 0, 0)
+                    WidthRequest = 70,
+                    HeightRequest = 35, // Aumentado de 25 para 35
+                    Margin = new Thickness(0, 5, 0, 0), // Aumentado o espaçamento superior
+                    HorizontalOptions = LayoutOptions.Fill,
+                    VerticalOptions = LayoutOptions.Center
                 };
 
                 // Armazenar referência do Entry
@@ -246,42 +268,42 @@ public partial class ProdutosPadraoPage : ContentPage
                     Orientation = StackOrientation.Horizontal,
                     VerticalOptions = LayoutOptions.Center,
                     HorizontalOptions = LayoutOptions.Center,
-                    Spacing = 5
+                    Spacing = 3 // Reduzido o espaçamento
                 };
 
                 var diminuirButton = new Button
                 {
                     Text = "-",
-                    FontSize = 16,
+                    FontSize = 12, // Reduzido ainda mais
                     FontAttributes = FontAttributes.Bold,
                     BackgroundColor = Colors.LightCoral,
                     TextColor = Colors.White,
-                    WidthRequest = 25,
-                    HeightRequest = 25,
-                    CornerRadius = 12,
+                    WidthRequest = 20, // Reduzido ainda mais
+                    HeightRequest = 20,
+                    CornerRadius = 10,
                     Padding = 0
                 };
 
                 var quantidadeLabel = new Label
                 {
                     Text = "1",
-                    FontSize = 14,
+                    FontSize = 12, // Reduzido
                     FontAttributes = FontAttributes.Bold,
                     VerticalOptions = LayoutOptions.Center,
                     HorizontalTextAlignment = TextAlignment.Center,
-                    WidthRequest = 25
+                    WidthRequest = 18 // Reduzido ainda mais
                 };
 
                 var aumentarButton = new Button
                 {
                     Text = "+",
-                    FontSize = 16,
+                    FontSize = 12, // Reduzido ainda mais
                     FontAttributes = FontAttributes.Bold,
                     BackgroundColor = Colors.LightGreen,
                     TextColor = Colors.White,
-                    WidthRequest = 25,
-                    HeightRequest = 25,
-                    CornerRadius = 12,
+                    WidthRequest = 20, // Reduzido ainda mais
+                    HeightRequest = 20,
+                    CornerRadius = 10,
                     Padding = 0
                 };
 
@@ -326,9 +348,17 @@ public partial class ProdutosPadraoPage : ContentPage
                 itemGrid.Children.Add(quantidadeStack);
                 Grid.SetColumn(quantidadeStack, 3);
 
-                // Preço
-                itemGrid.Children.Add(precoLabel);
-                Grid.SetColumn(precoLabel, 4);
+                // Container para preço - melhor organização
+                var precoStack = new StackLayout
+                {
+                    VerticalOptions = LayoutOptions.Center,
+                    HorizontalOptions = LayoutOptions.End,
+                    Spacing = 0
+                };
+                precoStack.Children.Add(precoLabel);
+
+                itemGrid.Children.Add(precoStack);
+                Grid.SetColumn(precoStack, 4);
 
                 itemFrame.Content = itemGrid;
                 stackLayout.Children.Add(itemFrame);
