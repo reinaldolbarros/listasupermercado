@@ -1,6 +1,7 @@
 ﻿using ListaComprasApp.ViewModels;
 using ListaComprasApp.Services;
 using ListaComprasApp.Models;
+using System.Globalization;
 
 namespace ListaComprasApp.Views;
 
@@ -9,7 +10,9 @@ public partial class ProdutosPadraoPage : ContentPage
     private readonly ProdutosPadraoViewModel _viewModel;
     private readonly Dictionary<string, int> _quantidades = new();
     private readonly Dictionary<string, Entry> _valoresUnitarios = new();
+    private readonly Dictionary<string, CheckBox> _checkboxes = new();
     private Label _totalLabel;
+    private Label _totalCheckadosLabel;
 
     public ProdutosPadraoPage(ProdutosPadraoViewModel viewModel)
     {
@@ -24,6 +27,10 @@ public partial class ProdutosPadraoPage : ContentPage
 
     private void CreateUI()
     {
+        // Definir cultura brasileira para toda a UI
+        CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("pt-BR");
+        CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("pt-BR");
+
         var scrollView = new ScrollView();
         var stackLayout = new StackLayout { Padding = 20 };
 
@@ -76,21 +83,20 @@ public partial class ProdutosPadraoPage : ContentPage
                     BackgroundColor = Colors.White,
                     BorderColor = Colors.LightGray,
                     CornerRadius = 8,
-                    Padding = 15,
+                    Padding = new Thickness(15, 8, 15, 8),
                     Margin = new Thickness(0, 2),
-                    MinimumHeightRequest = 80 // Aumentado para acomodar o Entry maior
+                    HeightRequest = 60
                 };
 
-                // ALTERAÇÃO PRINCIPAL: Redefinindo as colunas para dar mais espaço ao nome
                 var itemGrid = new Grid
                 {
                     ColumnDefinitions =
                     {
                         new ColumnDefinition { Width = GridLength.Auto }, // Checkbox 
                         new ColumnDefinition { Width = GridLength.Auto }, // Ícone 
-                        new ColumnDefinition { Width = new GridLength(4, GridUnitType.Star) }, // Nome + detalhes (MÁXIMO ESPAÇO)
-                        new ColumnDefinition { Width = new GridLength(60, GridUnitType.Absolute) }, // Controles quantidade (menor)
-                        new ColumnDefinition { Width = new GridLength(65, GridUnitType.Absolute) }  // Preço (menor)
+                        new ColumnDefinition { Width = new GridLength(4, GridUnitType.Star) }, // Nome + detalhes
+                        new ColumnDefinition { Width = new GridLength(90, GridUnitType.Absolute) }, // Controles quantidade 
+                        new ColumnDefinition { Width = new GridLength(75, GridUnitType.Absolute) }  // Preço (aumentado para evitar quebras)
                     }
                 };
 
@@ -99,6 +105,8 @@ public partial class ProdutosPadraoPage : ContentPage
                 {
                     VerticalOptions = LayoutOptions.Center
                 };
+                _checkboxes[produto.Nome] = checkbox;
+                checkbox.CheckedChanged += (s, e) => AtualizarTotalCheckados();
                 itemGrid.Children.Add(checkbox);
                 Grid.SetColumn(checkbox, 0);
 
@@ -109,21 +117,24 @@ public partial class ProdutosPadraoPage : ContentPage
                     FontSize = 24,
                     VerticalOptions = LayoutOptions.Center,
                     HorizontalOptions = LayoutOptions.Center,
-                    Margin = new Thickness(5, 0, 5, 0) // Reduzido o espaçamento
+                    Margin = new Thickness(5, 0, 5, 0)
                 };
                 itemGrid.Children.Add(iconeLabel);
                 Grid.SetColumn(iconeLabel, 1);
+
+                // Inicializar quantidade para este produto
+                _quantidades[produto.Nome] = 1;
 
                 // Nome e detalhes
                 var detalhesStack = new StackLayout
                 {
                     VerticalOptions = LayoutOptions.Start,
-                    HorizontalOptions = LayoutOptions.FillAndExpand, // Preencher todo espaço
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
                     Margin = new Thickness(5, 0, 10, 0),
                     Spacing = 2
                 };
 
-                // Verificar se é palavra única ou composta para aplicar lógica diferente
+                // Verificar se é palavra única ou composta
                 var nomeUpper = produto.Nome.ToUpper();
                 var temEspacos = nomeUpper.Contains(' ');
 
@@ -133,19 +144,19 @@ public partial class ProdutosPadraoPage : ContentPage
                     FontSize = 14,
                     FontAttributes = FontAttributes.Bold,
                     LineBreakMode = temEspacos ? LineBreakMode.WordWrap : LineBreakMode.TailTruncation,
-                    MaxLines = temEspacos ? 3 : 1, // Múltiplas linhas só para palavras compostas
+                    MaxLines = temEspacos ? 2 : 1,
                     VerticalOptions = LayoutOptions.Start,
                     HorizontalOptions = LayoutOptions.FillAndExpand
                 };
 
-                // Para palavras únicas grandes, ajustar fonte dinamicamente
+                // Ajustar fonte para palavras longas
                 if (!temEspacos && nomeUpper.Length > 10)
                 {
-                    nomeLabel.FontSize = 12; // Fonte menor para palavras únicas longas
+                    nomeLabel.FontSize = 12;
                 }
                 if (!temEspacos && nomeUpper.Length > 15)
                 {
-                    nomeLabel.FontSize = 10; // Ainda menor para palavras muito longas
+                    nomeLabel.FontSize = 10;
                 }
                 detalhesStack.Children.Add(nomeLabel);
 
@@ -160,21 +171,44 @@ public partial class ProdutosPadraoPage : ContentPage
                     _ => "un"
                 };
 
+                // MODIFICAÇÃO: Unidade e quantidade em um layout horizontal
+                var unidadeQuantidadeStack = new StackLayout
+                {
+                    Orientation = StackOrientation.Horizontal,
+                    Spacing = 5
+                };
+
                 var detalhesLabel = new Label
                 {
                     Text = unidadeTexto,
                     FontSize = 10,
-                    TextColor = Colors.Gray
+                    TextColor = Colors.Gray,
+                    VerticalOptions = LayoutOptions.Center
                 };
-                detalhesStack.Children.Add(detalhesLabel);
+                unidadeQuantidadeStack.Children.Add(detalhesLabel);
 
-                // Inicializar quantidade para este produto
-                _quantidades[produto.Nome] = 1;
+                // Adicionar a quantidade após a unidade
+                var quantidadeLabel = new Label
+                {
+                    Text = _quantidades[produto.Nome].ToString(),
+                    FontSize = 10,
+                    FontAttributes = FontAttributes.Bold,
+                    TextColor = Colors.Gray,
+                    VerticalOptions = LayoutOptions.Center
+                };
+                unidadeQuantidadeStack.Children.Add(quantidadeLabel);
 
-                // Criar label de preço
+                // Adicionar o stack de unidade+quantidade ao stack de detalhes
+                detalhesStack.Children.Add(unidadeQuantidadeStack);
+
+                // Adicionar stack de detalhes ao grid
+                itemGrid.Children.Add(detalhesStack);
+                Grid.SetColumn(detalhesStack, 2);
+
+                // Criar label de preço com formatação de moeda brasileira
                 var precoLabel = new Label
                 {
-                    Text = $"R$ {produto.PrecoMedio:F2}",
+                    Text = string.Format(CultureInfo.GetCultureInfo("pt-BR"), "R$ {0:N2}", produto.PrecoMedio * _quantidades[produto.Nome]),
                     FontSize = 14,
                     FontAttributes = FontAttributes.Bold,
                     TextColor = Colors.Green,
@@ -186,14 +220,15 @@ public partial class ProdutosPadraoPage : ContentPage
                 var valorEntry = new Entry
                 {
                     Placeholder = "0,00",
-                    Text = produto.PrecoMedio.ToString("F2"),
-                    FontSize = 12, // Aumentado ligeiramente
+                    Text = produto.PrecoMedio.ToString("N2", CultureInfo.GetCultureInfo("pt-BR")),
+                    FontSize = 12,
                     Keyboard = Keyboard.Numeric,
-                    WidthRequest = 70,
-                    HeightRequest = 35, // Aumentado de 25 para 35
-                    Margin = new Thickness(0, 5, 0, 0), // Aumentado o espaçamento superior
-                    HorizontalOptions = LayoutOptions.Fill,
-                    VerticalOptions = LayoutOptions.Center
+                    WidthRequest = 65,
+                    HeightRequest = 50,
+                    HorizontalOptions = LayoutOptions.Center,
+                    VerticalOptions = LayoutOptions.Center, // Centralizado verticalmente
+                    HorizontalTextAlignment = TextAlignment.Center,
+                    Margin = new Thickness(0, -8, 0, 0) // Margem negativa no topo para subir o campo
                 };
 
                 // Armazenar referência do Entry
@@ -236,14 +271,15 @@ public partial class ProdutosPadraoPage : ContentPage
                             if (long.TryParse(numericText, out long value))
                             {
                                 var formattedValue = (decimal)value / 100;
-                                var expectedText = formattedValue.ToString("F2");
+
+                                var expectedText = formattedValue.ToString("N2", CultureInfo.GetCultureInfo("pt-BR"));
 
                                 entry.Text = expectedText;
                                 entry.CursorPosition = expectedText.Length;
 
                                 // Atualiza o preço total do item
                                 var quantidade = _quantidades[produtoAtual.Nome];
-                                precoLabel.Text = $"R$ {formattedValue * quantidade:F2}";
+                                precoLabel.Text = string.Format(CultureInfo.GetCultureInfo("pt-BR"), "R$ {0:N2}", formattedValue * quantidade);
                                 AtualizarTotalGeral();
                             }
                         }
@@ -258,50 +294,51 @@ public partial class ProdutosPadraoPage : ContentPage
                     }
                 };
 
-                detalhesStack.Children.Add(valorEntry);
-                itemGrid.Children.Add(detalhesStack);
-                Grid.SetColumn(detalhesStack, 2);
-
-                // Controles de quantidade
-                var quantidadeStack = new StackLayout
+                // Container horizontal para o Entry e botões verticais
+                var quantidadeContainer = new StackLayout
                 {
                     Orientation = StackOrientation.Horizontal,
                     VerticalOptions = LayoutOptions.Center,
-                    HorizontalOptions = LayoutOptions.Center,
-                    Spacing = 3 // Reduzido o espaçamento
+                    HorizontalOptions = LayoutOptions.Start,
+                    Spacing = 5,
+                    Padding = new Thickness(0, 0, 0, 0)
                 };
 
-                var diminuirButton = new Button
+                // Adicionar o Entry à esquerda
+                quantidadeContainer.Children.Add(valorEntry);
+
+                // Container vertical para os botões
+                var botoesPlusMinusStack = new StackLayout
                 {
-                    Text = "-",
-                    FontSize = 12, // Reduzido ainda mais
+                    Orientation = StackOrientation.Vertical,
+                    VerticalOptions = LayoutOptions.Center,
+                    HorizontalOptions = LayoutOptions.Start,
+                    Spacing = 2,
+                    Margin = new Thickness(0, 0, 0, 0)
+                };
+
+                // Botões de controle
+                var aumentarButton = new Button
+                {
+                    Text = "+",
+                    FontSize = 12,
                     FontAttributes = FontAttributes.Bold,
-                    BackgroundColor = Colors.LightCoral,
+                    BackgroundColor = Colors.LightGreen,
                     TextColor = Colors.White,
-                    WidthRequest = 20, // Reduzido ainda mais
+                    WidthRequest = 20,
                     HeightRequest = 20,
                     CornerRadius = 10,
                     Padding = 0
                 };
 
-                var quantidadeLabel = new Label
+                var diminuirButton = new Button
                 {
-                    Text = "1",
-                    FontSize = 12, // Reduzido
+                    Text = "-",
+                    FontSize = 12,
                     FontAttributes = FontAttributes.Bold,
-                    VerticalOptions = LayoutOptions.Center,
-                    HorizontalTextAlignment = TextAlignment.Center,
-                    WidthRequest = 18 // Reduzido ainda mais
-                };
-
-                var aumentarButton = new Button
-                {
-                    Text = "+",
-                    FontSize = 12, // Reduzido ainda mais
-                    FontAttributes = FontAttributes.Bold,
-                    BackgroundColor = Colors.LightGreen,
+                    BackgroundColor = Colors.LightCoral,
                     TextColor = Colors.White,
-                    WidthRequest = 20, // Reduzido ainda mais
+                    WidthRequest = 20,
                     HeightRequest = 20,
                     CornerRadius = 10,
                     Padding = 0
@@ -327,7 +364,7 @@ public partial class ProdutosPadraoPage : ContentPage
                         _quantidades[produtoAtual.Nome]--;
                         quantidadeLabel.Text = _quantidades[produtoAtual.Nome].ToString();
                         var valorUnitario = ObterValorUnitario();
-                        precoLabel.Text = $"R$ {valorUnitario * _quantidades[produtoAtual.Nome]:F2}";
+                        precoLabel.Text = string.Format(CultureInfo.GetCultureInfo("pt-BR"), "R$ {0:N2}", valorUnitario * _quantidades[produtoAtual.Nome]);
                         AtualizarTotalGeral();
                     }
                 };
@@ -337,26 +374,33 @@ public partial class ProdutosPadraoPage : ContentPage
                     _quantidades[produtoAtual.Nome]++;
                     quantidadeLabel.Text = _quantidades[produtoAtual.Nome].ToString();
                     var valorUnitario = ObterValorUnitario();
-                    precoLabel.Text = $"R$ {valorUnitario * _quantidades[produtoAtual.Nome]:F2}";
+                    precoLabel.Text = string.Format(CultureInfo.GetCultureInfo("pt-BR"), "R$ {0:N2}", valorUnitario * _quantidades[produtoAtual.Nome]);
                     AtualizarTotalGeral();
                 };
 
-                quantidadeStack.Children.Add(diminuirButton);
-                quantidadeStack.Children.Add(quantidadeLabel);
-                quantidadeStack.Children.Add(aumentarButton);
+                // Adicionar os botões ao stack vertical
+                botoesPlusMinusStack.Children.Add(aumentarButton);
+                botoesPlusMinusStack.Children.Add(diminuirButton);
 
-                itemGrid.Children.Add(quantidadeStack);
-                Grid.SetColumn(quantidadeStack, 3);
+                // Adicionar o stack de botões ao container horizontal
+                quantidadeContainer.Children.Add(botoesPlusMinusStack);
 
-                // Container para preço - melhor organização
+                // Adicionar o container ao Grid
+                itemGrid.Children.Add(quantidadeContainer);
+                Grid.SetColumn(quantidadeContainer, 3);
+
+                // Container para preço
                 var precoStack = new StackLayout
                 {
                     VerticalOptions = LayoutOptions.Center,
                     HorizontalOptions = LayoutOptions.End,
-                    Spacing = 0
+                    Spacing = 2
                 };
+
+                // Adicionar o preço
                 precoStack.Children.Add(precoLabel);
 
+                // Adicionar o stack de preço ao Grid
                 itemGrid.Children.Add(precoStack);
                 Grid.SetColumn(precoStack, 4);
 
@@ -368,7 +412,7 @@ public partial class ProdutosPadraoPage : ContentPage
         // Total da lista
         _totalLabel = new Label
         {
-            Text = $"TOTAL: R$ {produtos.Sum(p => p.PrecoMedio):F2}",
+            Text = string.Format(CultureInfo.GetCultureInfo("pt-BR"), "TOTAL: R$ {0:N2}", produtos.Sum(p => p.PrecoMedio)),
             FontSize = 20,
             FontAttributes = FontAttributes.Bold,
             TextColor = Colors.Green,
@@ -376,6 +420,18 @@ public partial class ProdutosPadraoPage : ContentPage
             Margin = new Thickness(0, 20, 0, 0)
         };
         stackLayout.Children.Add(_totalLabel);
+
+        // Total dos itens marcados
+        _totalCheckadosLabel = new Label
+        {
+            Text = "TOTAL COMPRADO: R$ 0,00",
+            FontSize = 18,
+            FontAttributes = FontAttributes.Bold,
+            TextColor = Colors.Blue,
+            HorizontalOptions = LayoutOptions.Center,
+            Margin = new Thickness(0, 10, 0, 10)
+        };
+        stackLayout.Children.Add(_totalCheckadosLabel);
 
         // Botões de ação
         var botoesStack = new StackLayout
@@ -421,7 +477,6 @@ public partial class ProdutosPadraoPage : ContentPage
 
     private async void OnEditarListaClicked(object sender, EventArgs e)
     {
-        // Navegar para a aba de listas para permitir edição
         await Shell.Current.GoToAsync("//main");
     }
 
@@ -460,7 +515,39 @@ public partial class ProdutosPadraoPage : ContentPage
 
         if (_totalLabel != null)
         {
-            _totalLabel.Text = $"TOTAL: R$ {totalGeral:F2}";
+            _totalLabel.Text = string.Format(CultureInfo.GetCultureInfo("pt-BR"), "TOTAL: R$ {0:N2}", totalGeral);
+        }
+
+        AtualizarTotalCheckados();
+    }
+
+    private void AtualizarTotalCheckados()
+    {
+        decimal totalCheckados = 0;
+
+        foreach (var kvp in _checkboxes)
+        {
+            var nomeProduto = kvp.Key;
+            var checkbox = kvp.Value;
+
+            if (checkbox.IsChecked)
+            {
+                var quantidade = _quantidades[nomeProduto];
+
+                if (_valoresUnitarios.ContainsKey(nomeProduto))
+                {
+                    var valorEntry = _valoresUnitarios[nomeProduto];
+                    if (decimal.TryParse(valorEntry.Text, out decimal valorUnitario))
+                    {
+                        totalCheckados += valorUnitario * quantidade;
+                    }
+                }
+            }
+        }
+
+        if (_totalCheckadosLabel != null)
+        {
+            _totalCheckadosLabel.Text = string.Format(CultureInfo.GetCultureInfo("pt-BR"), "TOTAL SELECIONADOS: R$ {0:N2}", totalCheckados);
         }
     }
 }

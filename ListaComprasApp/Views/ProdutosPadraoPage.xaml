@@ -7,7 +7,7 @@
              Title="Lista de Compras">
 
     <ScrollView>
-        <StackLayout Padding="20">
+        <StackLayout Padding="5">
 
             <!-- Header -->
             <Label Text="Lista de Compras Padrão"
@@ -24,7 +24,7 @@
                    Margin="0,15,0,5" />
 
             <!-- ABACAXI -->
-            <Frame BackgroundColor="White" BorderColor="LightGray" CornerRadius="8" Padding="15" Margin="0,2">
+            <Frame BackgroundColor="White" BorderColor="LightGray" CornerRadius="8" Padding="1" Margin="0,2">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -33,7 +33,7 @@
                         <!-- Linha 2: Campo valor e controles -->
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="40" />
+                        <ColumnDefinition Width="30" />
                         <!-- Checkbox -->
                         <ColumnDefinition Width="50" />
                         <!-- Ícone -->
@@ -44,7 +44,7 @@
                     </Grid.ColumnDefinitions>
 
                     <!-- Linha 1 -->
-                    <CheckBox Grid.Row="0" Grid.Column="0" VerticalOptions="Center" />
+                    <CheckBox Grid.Row="0" Grid.Column="0" VerticalOptions="Center" Margin="-10, 0, 0, 0"/>
 
                     <Label Grid.Row="0" Grid.Column="1" 
                            Text="🍍" 
@@ -81,7 +81,7 @@
 
                         <StackLayout Orientation="Horizontal" 
                                      VerticalOptions="Center" 
-                                     Margin="20,0,0,0"
+                                     Margin="2,0,0,0"
                                      Spacing="5">
                             <Button Text="-" 
                                     FontSize="16" 
