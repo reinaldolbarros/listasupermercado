@@ -41,7 +41,7 @@ public partial class ProdutosPadraoPage : ContentPage
             FontSize = 20,
             FontAttributes = FontAttributes.Bold,
             HorizontalOptions = LayoutOptions.Center,
-            Margin = new Thickness(0, 0, 0, 20)
+            Margin = new Thickness(0, 0, 0, 0)
         };
         stackLayout.Children.Add(headerLabel);
 
@@ -83,7 +83,7 @@ public partial class ProdutosPadraoPage : ContentPage
                     BackgroundColor = Colors.White,
                     BorderColor = Colors.LightGray,
                     CornerRadius = 8,
-                    Padding = new Thickness(15, 8, 15, 8),
+                    Padding = new Thickness(5, 8, 4, 8),
                     Margin = new Thickness(0, 2),
                     HeightRequest = 60
                 };
@@ -103,7 +103,9 @@ public partial class ProdutosPadraoPage : ContentPage
                 // Checkbox
                 var checkbox = new CheckBox
                 {
-                    VerticalOptions = LayoutOptions.Center
+                    VerticalOptions = LayoutOptions.Center, 
+                    HorizontalOptions = LayoutOptions.Center,
+                    Margin = new Thickness(-10, 0, 0, 0) // Margem negativa à esquerda para puxar mais para a borda
                 };
                 _checkboxes[produto.Nome] = checkbox;
                 checkbox.CheckedChanged += (s, e) => AtualizarTotalCheckados();
@@ -117,7 +119,7 @@ public partial class ProdutosPadraoPage : ContentPage
                     FontSize = 24,
                     VerticalOptions = LayoutOptions.Center,
                     HorizontalOptions = LayoutOptions.Center,
-                    Margin = new Thickness(5, 0, 5, 0)
+                    Margin = new Thickness(-2, 0, 5, 0)
                 };
                 itemGrid.Children.Add(iconeLabel);
                 Grid.SetColumn(iconeLabel, 1);
@@ -129,7 +131,7 @@ public partial class ProdutosPadraoPage : ContentPage
                 var detalhesStack = new StackLayout
                 {
                     VerticalOptions = LayoutOptions.Start,
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    HorizontalOptions = LayoutOptions.Start,
                     Margin = new Thickness(5, 0, 10, 0),
                     Spacing = 2
                 };
@@ -143,20 +145,25 @@ public partial class ProdutosPadraoPage : ContentPage
                     Text = nomeUpper,
                     FontSize = 14,
                     FontAttributes = FontAttributes.Bold,
-                    LineBreakMode = temEspacos ? LineBreakMode.WordWrap : LineBreakMode.TailTruncation,
-                    MaxLines = temEspacos ? 2 : 1,
+                    LineBreakMode = temEspacos ? LineBreakMode.WordWrap : LineBreakMode.NoWrap,
+                    MaxLines = temEspacos ? 2 : 1, // Reduzido para no máximo 2 linhas,
                     VerticalOptions = LayoutOptions.Start,
-                    HorizontalOptions = LayoutOptions.FillAndExpand
+                    HorizontalOptions = LayoutOptions.Start,
+                    WidthRequest = 120
                 };
 
                 // Ajustar fonte para palavras longas
-                if (!temEspacos && nomeUpper.Length > 10)
+                if (nomeUpper.Length > 8) // Reduzido o limite para começar a diminuir a fonte mais cedo
                 {
-                    nomeLabel.FontSize = 12;
+                    nomeLabel.FontSize = 12; // Fonte menor para palavras longas
                 }
-                if (!temEspacos && nomeUpper.Length > 15)
+                if (nomeUpper.Length > 12) // Reduzido o limite para palavras muito longas
                 {
-                    nomeLabel.FontSize = 10;
+                    nomeLabel.FontSize = 10; // Ainda menor para palavras muito longas
+                }
+                if (nomeUpper.Length > 18) // Caso extremo
+                {
+                    nomeLabel.FontSize = 9; // Fonte mínima para palavras extremamente longas
                 }
                 detalhesStack.Children.Add(nomeLabel);
 
@@ -213,7 +220,8 @@ public partial class ProdutosPadraoPage : ContentPage
                     FontAttributes = FontAttributes.Bold,
                     TextColor = Colors.Green,
                     VerticalOptions = LayoutOptions.Center,
-                    HorizontalTextAlignment = TextAlignment.End
+                    HorizontalTextAlignment = TextAlignment.End,
+                    Margin = new Thickness(0, 0, 0, 0),
                 };
 
                 // Campo de entrada para valor unitário

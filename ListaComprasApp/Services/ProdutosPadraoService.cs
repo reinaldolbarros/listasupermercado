@@ -48,7 +48,7 @@ namespace ListaComprasApp.Services
             { "shampoo", (UnidadeMedida.Unidade, Categoria.Higiene, "🧴", 12.90m) },
             
             // Bebidas
-            { "refrigerante", (UnidadeMedida.Litro, Categoria.Bebidas, "🥤", 5.50m) },
+            { "refrigerantesukitacocacola", (UnidadeMedida.Litro, Categoria.Bebidas, "🥤", 5.50m) },
             { "cerveja", (UnidadeMedida.Unidade, Categoria.Bebidas, "🍺", 3.80m) },
             { "água", (UnidadeMedida.Litro, Categoria.Bebidas, "💧", 2.50m) },
             { "suco", (UnidadeMedida.Litro, Categoria.Bebidas, "🧃", 4.90m) },
