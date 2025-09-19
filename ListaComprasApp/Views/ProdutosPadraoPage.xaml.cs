@@ -31,6 +31,16 @@ public partial class ProdutosPadraoPage : ContentPage
         CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("pt-BR");
         CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("pt-BR");
 
+        // Grid principal para permitir um rodapé fixo
+        var mainGrid = new Grid
+        {
+            RowDefinitions =
+            {
+                new RowDefinition { Height = new GridLength(1, GridUnitType.Star) }, // Conteúdo principal
+                new RowDefinition { Height = GridLength.Auto } // Barra de totais
+            }
+        };
+
         var scrollView = new ScrollView();
         var stackLayout = new StackLayout { Padding = 20 };
 
@@ -83,9 +93,9 @@ public partial class ProdutosPadraoPage : ContentPage
                     BackgroundColor = Colors.White,
                     BorderColor = Colors.LightGray,
                     CornerRadius = 8,
-                    Padding = new Thickness(5, 8, 4, 8),
+                    Padding = new Thickness(5, 5, 4, 3),
                     Margin = new Thickness(0, 2),
-                    HeightRequest = 60
+                    HeightRequest = 62
                 };
 
                 var itemGrid = new Grid
@@ -103,7 +113,7 @@ public partial class ProdutosPadraoPage : ContentPage
                 // Checkbox
                 var checkbox = new CheckBox
                 {
-                    VerticalOptions = LayoutOptions.Center, 
+                    VerticalOptions = LayoutOptions.Center,
                     HorizontalOptions = LayoutOptions.Center,
                     Margin = new Thickness(-10, 0, 0, 0) // Margem negativa à esquerda para puxar mais para a borda
                 };
@@ -333,8 +343,8 @@ public partial class ProdutosPadraoPage : ContentPage
                     FontAttributes = FontAttributes.Bold,
                     BackgroundColor = Colors.LightGreen,
                     TextColor = Colors.White,
-                    WidthRequest = 20,
-                    HeightRequest = 20,
+                    WidthRequest = 24,
+                    HeightRequest = 24,
                     CornerRadius = 10,
                     Padding = 0
                 };
@@ -346,8 +356,8 @@ public partial class ProdutosPadraoPage : ContentPage
                     FontAttributes = FontAttributes.Bold,
                     BackgroundColor = Colors.LightCoral,
                     TextColor = Colors.White,
-                    WidthRequest = 20,
-                    HeightRequest = 20,
+                    WidthRequest = 24,
+                    HeightRequest = 24,
                     CornerRadius = 10,
                     Padding = 0
                 };
@@ -417,30 +427,6 @@ public partial class ProdutosPadraoPage : ContentPage
             }
         }
 
-        // Total da lista
-        _totalLabel = new Label
-        {
-            Text = string.Format(CultureInfo.GetCultureInfo("pt-BR"), "TOTAL: R$ {0:N2}", produtos.Sum(p => p.PrecoMedio)),
-            FontSize = 20,
-            FontAttributes = FontAttributes.Bold,
-            TextColor = Colors.Green,
-            HorizontalOptions = LayoutOptions.Center,
-            Margin = new Thickness(0, 20, 0, 0)
-        };
-        stackLayout.Children.Add(_totalLabel);
-
-        // Total dos itens marcados
-        _totalCheckadosLabel = new Label
-        {
-            Text = "TOTAL COMPRADO: R$ 0,00",
-            FontSize = 18,
-            FontAttributes = FontAttributes.Bold,
-            TextColor = Colors.Blue,
-            HorizontalOptions = LayoutOptions.Center,
-            Margin = new Thickness(0, 10, 0, 10)
-        };
-        stackLayout.Children.Add(_totalCheckadosLabel);
-
         // Botões de ação
         var botoesStack = new StackLayout
         {
@@ -475,7 +461,69 @@ public partial class ProdutosPadraoPage : ContentPage
         stackLayout.Children.Add(botoesStack);
 
         scrollView.Content = stackLayout;
-        Content = scrollView;
+
+        // Adicionar ScrollView à primeira linha do Grid principal
+        mainGrid.Children.Add(scrollView);
+        Grid.SetRow(scrollView, 0);
+
+        // Criar a barra de totais
+        var totaisFrame = new Frame
+        {
+            BackgroundColor = Colors.LightGray,
+            Padding = new Thickness(10, 5),
+            Margin = 0,
+            BorderColor = Colors.Transparent,
+            CornerRadius = 0,
+            HasShadow = false
+        };
+
+        var totaisGrid = new Grid
+        {
+            ColumnDefinitions =
+            {
+                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }
+            }
+        };
+
+        // Label para o TOTAL
+        _totalLabel = new Label
+        {
+            Text = string.Format(CultureInfo.GetCultureInfo("pt-BR"), "TOTAL PREVITSO:\nR$ {0:N2}", produtos.Sum(p => p.PrecoMedio)),
+            FontSize = 16,
+            FontAttributes = FontAttributes.Bold,
+            TextColor = Colors.Green,
+            HorizontalOptions = LayoutOptions.Center,
+            VerticalOptions = LayoutOptions.Center
+        };
+        totaisGrid.Children.Add(_totalLabel);
+        Grid.SetColumn(_totalLabel, 0);
+
+        // Label para o TOTAL COMPRADO
+        _totalCheckadosLabel = new Label
+        {
+            Text = "TOTAL COMPRADO:\nR$ 0,00",
+            FontSize = 16,
+            FontAttributes = FontAttributes.Bold,
+            TextColor = Colors.Blue,
+            HorizontalOptions = LayoutOptions.Center,
+            VerticalOptions = LayoutOptions.Center
+        };
+        totaisGrid.Children.Add(_totalCheckadosLabel);
+        Grid.SetColumn(_totalCheckadosLabel, 1);
+
+        // Inscrever-se nos eventos do gerenciador de totais
+        TotaisManager.TotalChanged += (newText) => _totalLabel.Text = newText;
+        TotaisManager.TotalCompradoChanged += (newText) => _totalCheckadosLabel.Text = newText;
+
+        totaisFrame.Content = totaisGrid;
+
+        // Adicionar a barra de totais à segunda linha do Grid principal
+        mainGrid.Children.Add(totaisFrame);
+        Grid.SetRow(totaisFrame, 1);
+
+        // Definir o Grid principal como o conteúdo da página
+        Content = mainGrid;
     }
 
     private void LoadProducts()
@@ -521,10 +569,8 @@ public partial class ProdutosPadraoPage : ContentPage
             }
         }
 
-        if (_totalLabel != null)
-        {
-            _totalLabel.Text = string.Format(CultureInfo.GetCultureInfo("pt-BR"), "TOTAL: R$ {0:N2}", totalGeral);
-        }
+        // Atualizar o total através do gerenciador
+        TotaisManager.UpdateTotal(totalGeral);
 
         AtualizarTotalCheckados();
     }
@@ -553,9 +599,7 @@ public partial class ProdutosPadraoPage : ContentPage
             }
         }
 
-        if (_totalCheckadosLabel != null)
-        {
-            _totalCheckadosLabel.Text = string.Format(CultureInfo.GetCultureInfo("pt-BR"), "TOTAL SELECIONADOS: R$ {0:N2}", totalCheckados);
-        }
+        // Atualizar o total comprado através do gerenciador
+        TotaisManager.UpdateTotalComprado(totalCheckados);
     }
 }
